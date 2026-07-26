@@ -18,7 +18,7 @@ export class DomainKits implements INodeType {
 		group: ['input'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
-		description: 'Search expired domains with the DomainKits API',
+		description: 'Query domain data with the DomainKits API',
 		defaults: {
 			name: 'DomainKits',
 		},

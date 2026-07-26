@@ -1,9 +1,9 @@
 {
 	"name": "n8n-nodes-domainkits",
 	"version": "0.1.1",
-	"description": "Search expired domains by keyword or TLD from inside n8n, filtered by expiry stage, domain age, drop date, and more",
+	"description": "Query the DomainKits domain data API from n8n. Search expiring domains by keyword or TLD, filtered by expiry stage, domain age, drop date, and more.",
 	"license": "MIT",
-	"homepage": "https://domainkits.com/integrations/n8n",
+	"homepage": "https://domainkits.com/dev",
 	"keywords": [
 		"n8n-community-node-package",
 		"expired-domains",

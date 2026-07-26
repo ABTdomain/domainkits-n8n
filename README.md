@@ -1,19 +1,16 @@
 # n8n-nodes-domainkits
 
-Search **expired domains** from inside n8n.
+Query the [DomainKits](https://domainkits.com) domain data API from inside [n8n](https://n8n.io/).
 
-This is an [n8n](https://n8n.io/) community node for the [DomainKits](https://domainkits.com) API. It lets you query domains moving through the expiry lifecycle — expired, redemption, pending delete — and pipe the matches straight into Slack, Sheets, a CRM, or anywhere else n8n can reach.
+DomainKits indexes the domain name space — expiring names, new registrations, marketplace listings, DNS and WHOIS records — and exposes it as a search API. This node brings that API into n8n, so you can pipe matches straight into Slack, Sheets, a CRM, or anywhere else n8n can reach.
 
 [Installation](#installation) · [Credentials](#credentials) · [Operations](#operations) · [Examples](#examples) · [Rate limits](#rate-limits)
 
-## What you can build with it
+## Why an API, not a download
 
-- **Drop catching** — search `.com` names entering pending delete, narrowed to 10+ years old, no hyphens, no digits. Run it every morning and only the new matches reach your sheet.
-- **Backorder shortlists** — watch names expiring on a given auction date and alert when one matches your keyword list.
-- **Brand recovery** — catch an expiring domain that contains your brand before someone else does.
-- **Aged domain sourcing** — filter by registration year to find names with real history, not last month's registrations.
+The domain space changes every day. Names expire, drop, get registered, get listed for sale. A dump is stale the moment you have it — the value is in asking again tomorrow with the same question.
 
-These are all *queries*, not downloads. The data changes daily, so the value is in asking again tomorrow — point a Schedule Trigger at the node and let it run.
+That is what this node is for: point a Schedule Trigger at it and let the query run on a cadence. Every filter the API supports is a node parameter, so the question you ask can be as narrow as you need.
 
 ## Installation
 
@@ -31,14 +28,14 @@ In n8n, create a new **DomainKits API** credential and paste the key (it starts 
 
 ### Expired Domain → Search
 
-Search domains moving through the expiry lifecycle. Two modes:
+Search domains moving through the expiry lifecycle — expired, redemption, pending delete. Two modes:
 
 | Mode | What it does |
 |---|---|
 | **By Keyword** | Matches a keyword (min 3 chars) across all TLDs. Optionally narrow to one TLD. |
 | **Browse a TLD** | Lists every expiring domain under one gTLD. ccTLDs are not supported in this mode. |
 
-**Filters**: expiry stage (expired / redemption / pending delete), domain age (multi-select), auction or drop date, registry hold status, keyword position, name length, letters-only or digits-only, exclude hyphens, exclude digits, negative keywords, sort order.
+**Filters**: expiry stage, domain age (multi-select), auction or drop date, registry hold status, keyword position, name length, letters-only or digits-only, exclude hyphens, exclude digits, negative keywords, sort order.
 
 **Output**: one n8n item per domain, with `domain`, `registered_date`, `age`, `tld_count`, and `status`.
 
@@ -47,6 +44,10 @@ Search domains moving through the expiry lifecycle. Two modes:
 A **Return All** toggle is available for one-off bulk pulls: it fetches up to 50,000 domains in a single request instead of paging.
 
 It runs on a small export quota, separate from your search allowance — 10 per day and 100 per month on Premium, 3 and 9 during the trial. That is enough for occasional research, not for a workflow on a schedule. Leave it off for anything recurring; a daily export would spend a third of the monthly allowance. The export also returns fewer columns (`registered_date` is the year only, and `age` is dropped), so paged mode is the better output in almost every case.
+
+### Coming next
+
+The DomainKits API covers more than expiring names. Further resources — newly registered domains, aged domains, marketplace listings, DNS and WHOIS lookups — are being added to this node one at a time. Watch the [repository](https://github.com/ABTdomain/domainkits-n8n) for releases.
 
 ## Examples
 
