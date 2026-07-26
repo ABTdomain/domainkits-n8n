@@ -1,0 +1,18 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"module": "node16",
+		"moduleResolution": "node16",
+		"target": "es2022",
+		"lib": ["es2022"],
+		"declaration": true,
+		"outDir": "dist",
+		"rootDir": ".",
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"useUnknownInCatchVariables": false
+	},
+	"include": ["credentials/**/*", "nodes/**/*", "shared/**/*"],
+	"exclude": ["nodes/DomainKits/resources/nrds.ts"]
+}

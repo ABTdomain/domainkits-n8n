@@ -1,0 +1,30 @@
+{
+	"node": "n8n-nodes-domainkits.domainKits",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Data & Storage"],
+	"alias": [
+		"domain",
+		"expired",
+		"expiring",
+		"dropping",
+		"pending delete",
+		"redemption",
+		"backorder",
+		"drop catching",
+		"aged domain",
+		"whois"
+	],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://domainkits.com/dev/api-docs"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://domainkits.com/integrations/n8n"
+			}
+		]
+	}
+}

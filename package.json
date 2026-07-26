@@ -1,0 +1,64 @@
+{
+	"name": "n8n-nodes-domainkits",
+	"version": "0.1.1",
+	"description": "Search expired domains by keyword or TLD from inside n8n, filtered by expiry stage, domain age, drop date, and more",
+	"license": "MIT",
+	"homepage": "https://domainkits.com/integrations/n8n",
+	"keywords": [
+		"n8n-community-node-package",
+		"expired-domains",
+		"expired-domain-search",
+		"dropped-domains",
+		"pending-delete",
+		"domain-backorder",
+		"domain-research",
+		"domainkits"
+	],
+	"author": {
+		"name": "DomainKits",
+		"email": "info@domainkits.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ABTdomain/domainkits-n8n.git"
+	},
+	"bugs": {
+		"url": "https://github.com/ABTdomain/domainkits-n8n/issues"
+	},
+	"engines": {
+		"node": ">=20.15"
+	},
+	"scripts": {
+		"build": "n8n-node build",
+		"build:watch": "tsc --watch",
+		"build:local": "tsc --outDir dist && node scripts/copy-assets.mjs",
+		"dev": "n8n-node dev",
+		"lint": "n8n-node lint",
+		"lint:fix": "n8n-node lint --fix",
+		"release": "n8n-node release",
+		"prepublishOnly": "n8n-node prerelease"
+	},
+	"files": [
+		"dist"
+	],
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"strict": true,
+		"credentials": [
+			"dist/credentials/DomainKitsApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/DomainKits/DomainKits.node.js"
+		]
+	},
+	"devDependencies": {
+		"@n8n/node-cli": "*",
+		"eslint": "9.39.4",
+		"prettier": "3.8.3",
+		"release-it": "20.2.0",
+		"typescript": "^5.9.3"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
+}
