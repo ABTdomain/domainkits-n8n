@@ -2,15 +2,15 @@
 
 Query the [DomainKits](https://domainkits.com) domain data API from inside [n8n](https://n8n.io/).
 
-DomainKits indexes the domain name space — expiring names, new registrations, marketplace listings, DNS and WHOIS records — and exposes it as a search API. This node brings that API into n8n, so you can pipe matches straight into Slack, Sheets, a CRM, or anywhere else n8n can reach.
+DomainKits is one API with a shared key across every endpoint — expiring domains, newly registered domains, DNS and WHOIS lookups, and more. One credential in n8n covers all of them. This node currently exposes the expired domain search; further endpoints are being added as separate resources on the same node.
 
-[Installation](#installation) · [Credentials](#credentials) · [Operations](#operations) · [Examples](#examples) · [Rate limits](#rate-limits)
+[Installation](#installation) · [Credentials](#credentials) · [Operations](#operations) · [Coverage](#coverage) · [Examples](#examples) · [Rate limits](#rate-limits)
 
-## Why an API, not a download
+## Why query instead of download
 
-The domain space changes every day. Names expire, drop, get registered, get listed for sale. A dump is stale the moment you have it — the value is in asking again tomorrow with the same question.
+Domains move through the expiry lifecycle daily, so an export is out of date as soon as you have it. Point a Schedule Trigger at this node and the same question gets asked against current data every run.
 
-That is what this node is for: point a Schedule Trigger at it and let the query run on a cadence. Every filter the API supports is a node parameter, so the question you ask can be as narrow as you need.
+Every filter the API supports is a node parameter, so a query can be as narrow as you need — see [Operations](#operations).
 
 ## Installation
 
@@ -22,7 +22,7 @@ Package name: `n8n-nodes-domainkits`
 
 You need a DomainKits API key. Sign up at [domainkits.com](https://domainkits.com/pricing) — API access requires a Premium or higher plan, and Premium includes a trial period. The same key works for the DomainKits MCP server.
 
-In n8n, create a new **DomainKits API** credential and paste the key (it starts with `dk_`). The credential test hits `/usage`, which has an unlimited daily quota, so testing never burns a search request.
+In n8n, create a new **DomainKits API** credential and paste the key. The credential test hits `/usage`, which has no daily quota, so testing never burns a search request.
 
 ## Operations
 
@@ -32,22 +32,42 @@ Search domains moving through the expiry lifecycle — expired, redemption, pend
 
 | Mode | What it does |
 |---|---|
-| **By Keyword** | Matches a keyword (min 3 chars) across all TLDs. Optionally narrow to one TLD. |
-| **Browse a TLD** | Lists every expiring domain under one gTLD. ccTLDs are not supported in this mode. |
+| **By Keyword** | Matches a keyword (min 3 chars) across every indexed gTLD. Optionally narrow to one gTLD. |
+| **Browse a TLD** | Lists every expiring domain under one gTLD. |
 
 **Filters**: expiry stage, domain age (multi-select), auction or drop date, registry hold status, keyword position, name length, letters-only or digits-only, exclude hyphens, exclude digits, negative keywords, sort order.
 
 **Output**: one n8n item per domain, with `domain`, `registered_date`, `age`, `tld_count`, and `status`.
 
+**Paging**: up to 500 results per request. Use **Offset** to walk through a larger result set — the `total` field on every response tells you how far it goes.
+
 ### Return All
 
-A **Return All** toggle is available for one-off bulk pulls: it fetches up to 50,000 domains in a single request instead of paging.
+A **Return All** toggle is available for one-off bulk pulls: it returns up to 50,000 domains in a single request instead of paging.
+
+Note that 50,000 is a cap, not a promise of completeness — browsing `.com` matched 4,847,613 expiring domains on 27 July 2026, so an unfiltered export returns the first 50,000 of them. Narrow the query with filters if you need the result set to fit.
 
 It runs on a small export quota, separate from your search allowance — 10 per day and 100 per month on Premium, 3 and 9 during the trial. That is enough for occasional research, not for a workflow on a schedule. Leave it off for anything recurring; a daily export would spend a third of the monthly allowance. The export also returns fewer columns (`registered_date` is the year only, and `age` is dropped), so paged mode is the better output in almost every case.
 
-### Coming next
+### One API, more endpoints to come
 
-The DomainKits API covers more than expiring names. Further resources — newly registered domains, aged domains, marketplace listings, DNS and WHOIS lookups — are being added to this node one at a time. Watch the [repository](https://github.com/ABTdomain/domainkits-n8n) for releases.
+The key you configure here authenticates every DomainKits endpoint — 20 of them at the time of writing, including newly registered domains, DNS, WHOIS, reverse nameserver lookups, typosquat detection and TLD trends. See the [API reference](https://domainkits.com/dev/api-docs) for the full list.
+
+This node exposes the expired domain search today. Further endpoints are added as separate resources on the same node, so a new capability is a node update, not a second credential. Watch the [repository](https://github.com/ABTdomain/domainkits-n8n) for releases.
+
+## Coverage
+
+**gTLDs only.** The index covers generic TLDs — `.com`, `.net`, `.org`, `.info`, `.biz`, `.xyz`, `.online`, `.site`, `.top`, `.club`, `.live`, `.app`, `.dev` and others. Country-code TLDs are not indexed: a query for `.de`, `.io`, `.co` or `.us` returns an empty result set, not an error.
+
+Scale, measured on 27 July 2026 by browsing `.com` with no other filter:
+
+| Stage | `.com` domains |
+|---|---|
+| Expired | 1,597,469 |
+| Redemption | 2,754,494 |
+| Pending delete | 495,650 |
+
+Counts move daily as names progress through the lifecycle and drop. Every response carries a `total` field, so you can see the size of any result set before paging through it.
 
 ## Examples
 
@@ -65,7 +85,7 @@ The node is exposed as a tool, so an n8n AI Agent can call it directly. Ask the 
 
 ## Rate limits
 
-Quotas follow your account and vary by plan. Search is generous; export is not.
+Quotas follow your account and vary by plan. Search and export are metered separately.
 
 | | Search | Export |
 |---|---|---|
@@ -81,7 +101,7 @@ Current limits: [domainkits.com/dev/api-docs](https://domainkits.com/dev/api-doc
 
 ## Compatibility
 
-Tested against n8n 1.x. Requires an n8n instance that supports community nodes.
+Verified on n8n 2.31.6. Requires an n8n instance that supports community nodes.
 
 ## Resources
 

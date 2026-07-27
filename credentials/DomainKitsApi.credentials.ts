@@ -23,7 +23,7 @@ export class DomainKitsApi implements ICredentialType {
 			typeOptions: { password: true },
 			default: '',
 			required: true,
-			placeholder: 'dk_xxxxxxxxxxxxxxxx',
+			placeholder: 'Your DomainKits API key',
 			description:
 				'Your DomainKits API key. Requires a Premium or higher plan. The same key works for the DomainKits MCP server.',
 		},

@@ -13,12 +13,12 @@ export function searchModeProperty(show: ShowRule): INodeProperties {
 			{
 				name: 'By Keyword',
 				value: 'keyword',
-				description: 'Match a keyword across all TLDs',
+				description: 'Match a keyword across every indexed gTLD',
 			},
 			{
 				name: 'Browse a TLD',
 				value: 'tld',
-				description: 'List every domain under one gTLD (ccTLDs not supported)',
+				description: 'List every domain under one gTLD',
 			},
 		],
 		default: 'keyword',
@@ -47,7 +47,8 @@ export function tldProperty(show: ShowRule): INodeProperties {
 		required: true,
 		default: 'com',
 		placeholder: 'com',
-		description: 'The gTLD to browse, without a leading dot. ccTLDs are not supported in this mode.',
+		description:
+			'The gTLD to browse, without a leading dot. Only gTLDs are indexed; ccTLDs are not supported.',
 		displayOptions: { show },
 		routing: { request: { qs: { tld: '={{$value}}' } } },
 	};
@@ -181,7 +182,8 @@ export const tldFilter: INodeProperties = {
 	type: 'string',
 	default: '',
 	placeholder: 'com',
-	description: 'Restrict keyword results to a single TLD',
+	description:
+		'Restrict keyword results to a single gTLD, without a leading dot. Only gTLDs are indexed; a ccTLD such as de or io returns no results.',
 	routing: { request: { qs: { tld: '={{$value}}' } } },
 };
 
