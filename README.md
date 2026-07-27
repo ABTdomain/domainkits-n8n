@@ -22,7 +22,7 @@ Package name: `n8n-nodes-domainkits`
 
 You need a DomainKits API key. Sign up at [domainkits.com](https://domainkits.com/pricing) — API access requires a Premium or higher plan, and Premium includes a trial period. The same key works for the DomainKits MCP server.
 
-In n8n, create a new **DomainKits API** credential and paste the key. The credential test hits `/usage`, which has no daily quota, so testing never burns a search request.
+In n8n, create a new **DomainKits API** credential and paste the key (it starts with `dk_`). The credential test hits `/usage`, which has no daily quota, so testing never burns a search request.
 
 ## Operations
 
