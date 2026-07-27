@@ -35,7 +35,7 @@ Search domains moving through the expiry lifecycle — expired, redemption, pend
 | **By Keyword** | Matches a keyword (min 3 chars) across every indexed gTLD. Optionally narrow to one gTLD. |
 | **Browse a TLD** | Lists every expiring domain under one gTLD. |
 
-**Filters**: expiry stage, domain age (multi-select), auction or drop date, registry hold status, keyword position, name length, letters-only or digits-only, exclude hyphens, exclude digits, negative keywords, sort order.
+**Filters**: expiry stage, domain age, auction or drop date, registry hold status, keyword position, name length, letters-only or digits-only, exclude hyphens, exclude digits, negative keywords, sort order. Age and length accept a preset band (`5-10`), an exact value (`10`), or a range (`8-12`); age also combines with a comma (`0-5,20+`).
 
 **Output**: one n8n item per domain, with `domain`, `registered_date`, `age`, `tld_count`, and `status`.
 
