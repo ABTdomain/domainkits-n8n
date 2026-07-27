@@ -59,6 +59,8 @@ This node exposes the expired domain search today. Further endpoints are added a
 
 **gTLDs only.** The index covers generic TLDs — `.com`, `.net`, `.org`, `.info`, `.biz`, `.xyz`, `.online`, `.site`, `.top`, `.club`, `.live`, `.app`, `.dev` and others. Country-code TLDs are not indexed: a query for `.de`, `.io`, `.co` or `.us` returns an empty result set, not an error.
 
+**No PII.** Responses contain no personal data: domain name, dates, lifecycle status and TLD counts only. No registrant names, emails, addresses or phone numbers.
+
 Scale, measured on 27 July 2026 by browsing `.com` with no other filter:
 
 | Stage | `.com` domains |
