@@ -146,15 +146,11 @@ export const excludeKeywordsFilter: INodeProperties = {
 export const lengthFilter: INodeProperties = {
 	displayName: 'Length',
 	name: 'length',
-	type: 'options',
-	default: '5-10',
-	description: 'Length range of the domain name',
-	options: [
-		{ name: 'Under 5', value: '<5' },
-		{ name: '5 to 10', value: '5-10' },
-		{ name: '10 to 15', value: '10-15' },
-		{ name: '15 and Over', value: '15+' },
-	],
+	type: 'string',
+	default: '',
+	placeholder: '5-10',
+	description:
+		'Length of the domain name, excluding the TLD. Accepts a preset band (<code>&lt;5</code>, <code>5-10</code>, <code>10-15</code>, <code>15+</code>), an exact length (<code>10</code>), or a range (<code>8-12</code>, inclusive of both ends).',
 	routing: { request: { qs: { length: '={{$value}}' } } },
 };
 

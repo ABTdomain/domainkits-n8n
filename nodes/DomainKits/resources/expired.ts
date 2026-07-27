@@ -77,17 +77,12 @@ export const expiredDescription: INodeProperties[] = [
 			{
 				displayName: 'Age',
 				name: 'age_range',
-				type: 'multiOptions',
-				default: [],
+				type: 'string',
+				default: '',
+				placeholder: '10-20',
 				description:
-					'Age of the domain in years. Select more than one range to widen the search.',
-				options: [
-					{ name: '0 to 5 Years', value: '0-5' },
-					{ name: '5 to 10 Years', value: '5-10' },
-					{ name: '10 to 20 Years', value: '10-20' },
-					{ name: '20 Years and Over', value: '20+' },
-				],
-				routing: { request: { qs: { age_range: '={{$value.join(",")}}' } } },
+					'Age of the domain in years. Accepts a preset band (<code>0-5</code>, <code>5-10</code>, <code>10-20</code>, <code>20+</code>), an exact age (<code>25</code>), or a range (<code>20-25</code>, inclusive of both ends). Combine with a comma to widen the search: <code>0-5,20+</code>.',
+				routing: { request: { qs: { age_range: '={{$value}}' } } },
 			},
 			{
 				displayName: 'Auction Date',
