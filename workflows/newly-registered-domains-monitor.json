@@ -1,5 +1,5 @@
 {
-	"name": "Brand watch: newly registered domains",
+	"name": "Newly registered domains monitor",
 	"nodes": [
 		{
 			"parameters": {
@@ -16,7 +16,10 @@
 			"name": "Every morning",
 			"type": "n8n-nodes-base.scheduleTrigger",
 			"typeVersion": 1.2,
-			"position": [0, 0]
+			"position": [
+				0,
+				0
+			]
 		},
 		{
 			"parameters": {
@@ -33,7 +36,10 @@
 			"name": "New registrations containing brand",
 			"type": "n8n-nodes-domainkits.domainKits",
 			"typeVersion": 1,
-			"position": [220, 0]
+			"position": [
+				220,
+				0
+			]
 		},
 		{
 			"parameters": {
@@ -44,7 +50,10 @@
 			"name": "Combine into one list",
 			"type": "n8n-nodes-base.aggregate",
 			"typeVersion": 1,
-			"position": [440, 0]
+			"position": [
+				440,
+				0
+			]
 		},
 		{
 			"parameters": {
@@ -70,7 +79,10 @@
 			"name": "Build alert text",
 			"type": "n8n-nodes-base.set",
 			"typeVersion": 3.4,
-			"position": [660, 0]
+			"position": [
+				660,
+				0
+			]
 		}
 	],
 	"connections": {

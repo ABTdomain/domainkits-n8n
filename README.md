@@ -87,7 +87,9 @@ Counts move daily as names progress through the lifecycle and drop. Every respon
 
 ## Ready-made workflows
 
-[**Brand watch: newly registered domains**](workflows/brand-nrd-monitor.json) — runs every morning, pulls the domains registered yesterday that contain your brand, and formats a single alert listing each name with its registration and expiry dates.
+[**Newly registered domains monitor**](workflows/newly-registered-domains-monitor.json) — runs every morning, pulls the domains registered yesterday that contain your brand or keyword, and formats a single alert listing each name with its registration and expiry dates.
+
+A run on `paypal` against 25 July 2026 returned 8 registrations from that one day: `paypal-billiing.online`, `paypalbilliing.online`, `auhtpaypal.com`, `paypal-ref12954.com`, `paypal-de.help`, `paypals.click`, `emails-paypal.online` and `paypal-ais.com`.
 
 To use it: download the JSON, open n8n, press `Ctrl+V` on an empty canvas (or **Import from File**), then set your keyword on the DomainKits node and pick your credential. Add a Gmail, Slack or Discord node after **Build alert text** to deliver `{{ $json.subject }}` and `{{ $json.message }}` wherever you want them.
 
