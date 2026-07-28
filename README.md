@@ -85,6 +85,14 @@ Scale, measured on 27 July 2026 by browsing `.com` with no other filter:
 
 Counts move daily as names progress through the lifecycle and drop. Every response carries a `total` field, so you can see the size of any result set before paging through it.
 
+## Ready-made workflows
+
+[**Brand watch: newly registered domains**](workflows/brand-nrd-monitor.json) — runs every morning, pulls the domains registered yesterday that contain your brand, and formats a single alert listing each name with its registration and expiry dates.
+
+To use it: download the JSON, open n8n, press `Ctrl+V` on an empty canvas (or **Import from File**), then set your keyword on the DomainKits node and pick your credential. Add a Gmail, Slack or Discord node after **Build alert text** to deliver `{{ $json.subject }}` and `{{ $json.message }}` wherever you want them.
+
+The workflow filters on `reg_date` set to yesterday, so a daily run never repeats names it already reported.
+
 ## Examples
 
 **Pending delete watchlist** — Schedule Trigger (daily) → DomainKits (Expired, browse TLD `com`, stage `Pending Delete`, age 10-20 and 20+, no hyphens, no digits, limit 200) → Filter → Google Sheets.
