@@ -3,12 +3,14 @@ import { parseDomainKitsResponse } from '../../../shared/output';
 import {
 	compositionFilter,
 	excludeKeywordsFilter,
+	hasSaleFilter,
 	keywordPositionProperty,
 	keywordProperty,
 	lengthFilter,
 	noHyphensFilter,
 	noNumbersFilter,
 	paginationProperties,
+	regDateFilter,
 	returnAllProperties,
 	searchModeProperty,
 	sortFilter,
@@ -76,14 +78,7 @@ export const nrdDescription: INodeProperties[] = [
 		options: [
 			compositionFilter,
 			excludeKeywordsFilter,
-			{
-				displayName: 'Has Marketplace Listing',
-				name: 'has_sale',
-				type: 'boolean',
-				default: false,
-				description: 'Whether to return only domains that are listed for sale',
-				routing: { request: { qs: { has_sale: '={{$value}}' } } },
-			},
+			hasSaleFilter,
 			lengthFilter,
 			noHyphensFilter,
 			noNumbersFilter,
@@ -100,6 +95,7 @@ export const nrdDescription: INodeProperties[] = [
 				],
 				routing: { request: { qs: { days_range: '={{$value}}' } } },
 			},
+			regDateFilter,
 			{
 				displayName: 'Registration Term',
 				name: 'period',

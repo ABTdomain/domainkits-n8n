@@ -6,6 +6,7 @@ import {
 	keywordPositionProperty,
 	keywordProperty,
 	lengthFilter,
+	newFilter,
 	noHyphensFilter,
 	noNumbersFilter,
 	paginationProperties,
@@ -109,6 +110,9 @@ export const expiredDescription: INodeProperties[] = [
 				routing: { request: { qs: { hold: '={{$value}}' } } },
 			},
 			lengthFilter,
+			newFilter(
+				'domains that entered the expired pool recently. Applies to the expired stage only',
+			),
 			noHyphensFilter,
 			noNumbersFilter,
 			sortFilter(

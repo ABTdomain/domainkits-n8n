@@ -98,10 +98,31 @@ export async function parseDomainKitsResponse(
 		});
 	}
 
-	const rows = (envelope.data ?? []) as IDataObject[];
+	const rows = (envelope.data ?? []) as unknown[];
 	const total = envelope.total;
 
-	return rows.map((row) => ({
-		json: total === undefined ? row : { ...row, _total: total },
-	}));
+	return rows.map((row) => {
+		const json = typeof row === 'string' ? { domain: row } : (row as IDataObject);
+		return { json: total === undefined ? json : { ...json, _total: total } };
+	});
+}
+
+export async function parseDomainKitsObject(
+	this: IExecuteSingleFunctions,
+	_items: INodeExecutionData[],
+	response: IN8nHttpFullResponse,
+): Promise<INodeExecutionData[]> {
+	const envelope = (response.body ?? {}) as IDataObject;
+
+	if (envelope.success === false) {
+		throw new NodeApiError(this.getNode(), envelope as JsonObject, {
+			message: String(envelope.error ?? 'DomainKits API returned an error'),
+		});
+	}
+
+	const data = envelope.data ?? envelope;
+	if (Array.isArray(data)) {
+		return data.map((row) => ({ json: row as IDataObject }));
+	}
+	return [{ json: data as IDataObject }];
 }

@@ -2,7 +2,7 @@
 
 Query the [DomainKits](https://domainkits.com) domain data API from inside [n8n](https://n8n.io/).
 
-DomainKits is one API with a shared key across every endpoint — expiring domains, newly registered domains, DNS and WHOIS lookups, and more. One credential in n8n covers all of them. This node currently exposes the expired domain search; further endpoints are being added as separate resources on the same node.
+DomainKits is one API with a shared key across every endpoint — expiring domains, newly registered domains, DNS and WHOIS lookups, and more. One credential in n8n covers all of them. This node exposes every endpoint: six domain search types, WHOIS, DNS, safety, typosquat and other lookups, Certificate Transparency, domain change monitoring, trends and account usage.
 
 [Installation](#installation) · [Credentials](#credentials) · [Operations](#operations) · [Coverage](#coverage) · [Examples](#examples) · [Rate limits](#rate-limits)
 
@@ -25,6 +25,22 @@ You need a DomainKits API key. Sign up at [domainkits.com](https://domainkits.co
 In n8n, create a new **DomainKits API** credential and paste the key (it starts with `dk_`). The credential test hits `/usage`, which has no daily quota, so testing never burns a search request.
 
 ## Operations
+
+| Resource | Operations |
+|---|---|
+| Newly Registered Domain (default) | Search domains registered in the last 60 days, filterable by registration date, term, length and more |
+| Expired Domain | Search the expired, redemption and pending delete stages |
+| Aged Domain | Search domains with 5 to 20+ years of history |
+| Active Domain | Search currently registered domains |
+| Deleted Domain | Search dropped domains (keyword required) |
+| Marketplace Domain | Search for-sale listings, filterable by marketplace and listing recency |
+| Domain Lookup | WHOIS, DNS records, safety check, IP lookup, registrar lookup, EPP status guide, TLD availability, typosquat scan, reverse nameserver |
+| Certificate Transparency | Subdomains, certificates, hostname search |
+| Domain Monitor | Domains whose registration changed in the last 7 days |
+| Trend | TLD registration volumes, hot and emerging keywords, prefix trends |
+| Account | Per-endpoint quota and usage |
+
+Search resources share the same shape: keyword or TLD-browse mode, paging up to 500 rows per request, a Return All export toggle, and filters that match the REST parameters. `length` and `age_range` accept a preset band (`5-10`), an exact value (`10`), or a range (`8-12`).
 
 ### Expired Domain → Search
 
@@ -49,11 +65,9 @@ Note that 50,000 is a cap, not a promise of completeness — browsing `.com` mat
 
 It runs on a small export quota, separate from your search allowance — 10 per day and 100 per month on Premium, 3 and 9 during the trial. That is enough for occasional research, not for a workflow on a schedule. Leave it off for anything recurring; a daily export would spend a third of the monthly allowance. The export also returns fewer columns (`registered_date` is the year only, and `age` is dropped), so paged mode is the better output in almost every case.
 
-### One API, more endpoints to come
+### One API, one credential
 
-The key you configure here authenticates every DomainKits endpoint — 20 of them at the time of writing, including newly registered domains, DNS, WHOIS, reverse nameserver lookups, typosquat detection and TLD trends. See the [API reference](https://domainkits.com/dev/api-docs) for the full list.
-
-This node exposes the expired domain search today. Further endpoints are added as separate resources on the same node, so a new capability is a node update, not a second credential. Watch the [repository](https://github.com/ABTdomain/domainkits-n8n) for releases.
+The key you configure here authenticates every DomainKits endpoint, and this node exposes all of them as resources. A new capability arrives as a node update, not a second credential. See the [API reference](https://domainkits.com/dev/api-docs) for parameter details.
 
 ## Coverage
 

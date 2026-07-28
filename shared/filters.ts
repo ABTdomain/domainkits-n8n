@@ -197,3 +197,62 @@ export function sortFilter(
 		routing: { request: { qs: { sort: '={{$value}}' } } },
 	};
 }
+
+export function ageRangeFilter(bands: string): INodeProperties {
+	return {
+		displayName: 'Age',
+		name: 'age_range',
+		type: 'string',
+		default: '',
+		placeholder: '10-20',
+		description: `Age of the domain in years. Accepts a preset band (${bands}), an exact age (<code>25</code>), or a range (<code>20-25</code>, inclusive of both ends). Combine with a comma to widen the search.`,
+		routing: { request: { qs: { age_range: '={{$value}}' } } },
+	};
+}
+
+export function newFilter(subject: string): INodeProperties {
+	return {
+		displayName: 'New Within',
+		name: 'new',
+		type: 'options',
+		default: '3',
+		description: `Only ${subject}, based on the most recent observed day`,
+		options: [
+			{ name: 'Last 2 Days', value: '2' },
+			{ name: 'Last 3 Days', value: '3' },
+			{ name: 'Last Day', value: '1' },
+		],
+		routing: { request: { qs: { new: '={{$value}}' } } },
+	};
+}
+
+export const hasSaleFilter: INodeProperties = {
+	displayName: 'Has Marketplace Listing',
+	name: 'has_sale',
+	type: 'boolean',
+	default: false,
+	description: 'Whether to return only domains that are listed for sale',
+	routing: { request: { qs: { has_sale: '={{$value}}' } } },
+};
+
+export const platformFilter: INodeProperties = {
+	displayName: 'Marketplace',
+	name: 'platform',
+	type: 'string',
+	default: '',
+	placeholder: 'Sedo,Godaddy',
+	description:
+		'Marketplace the domain is listed on. Case-insensitive; combine with a comma. Values include Afternic, Atom, BuyDomains, Dan, DDD, DN.com, Godaddy, Hugedomains, SawSells, Sedo, Venture and 4.cn.',
+	routing: { request: { qs: { platform: '={{$value}}' } } },
+};
+
+export const regDateFilter: INodeProperties = {
+	displayName: 'Registration Date',
+	name: 'reg_date',
+	type: 'string',
+	default: '',
+	placeholder: '2026-07-10',
+	description:
+		'Registration date. Accepts a day (<code>2026-07-10</code>), a month (<code>2026-07</code>), a year (<code>2026</code>), or a <code>from:to</code> range, where either side may be omitted.',
+	routing: { request: { qs: { reg_date: '={{$value}}' } } },
+};

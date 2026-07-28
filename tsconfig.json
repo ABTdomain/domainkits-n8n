@@ -13,6 +13,5 @@
 		"forceConsistentCasingInFileNames": true,
 		"useUnknownInCatchVariables": false
 	},
-	"include": ["credentials/**/*", "nodes/**/*", "shared/**/*"],
-	"exclude": ["nodes/DomainKits/resources/nrds.ts"]
+	"include": ["credentials/**/*", "nodes/**/*", "shared/**/*"]
 }
