@@ -78,6 +78,7 @@ export async function parseDomainKitsResponse(
 			try {
 				parsed = JSON.parse(trimmed) as IDataObject;
 			} catch {
+				parsed = undefined;
 			}
 			if (parsed?.success === false) {
 				throw new NodeApiError(this.getNode(), parsed as JsonObject, {
