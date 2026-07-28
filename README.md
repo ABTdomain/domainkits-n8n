@@ -34,13 +34,25 @@ In n8n, create a new **DomainKits API** credential and paste the key (it starts 
 | Active Domain | Search currently registered domains |
 | Deleted Domain | Search dropped domains (keyword required) |
 | Marketplace Domain | Search for-sale listings, filterable by marketplace and listing recency |
-| Domain Lookup | WHOIS, DNS records, safety check, IP lookup, registrar lookup, EPP status guide, TLD availability, typosquat scan, reverse nameserver |
+| Domain Lookup | WHOIS, DNS records, safety check, IP lookup, registrar lookup, EPP status guide, TLD availability, typosquat scan, reverse nameserver, plus bulk WHOIS and bulk DNS |
 | Certificate Transparency | Subdomains, certificates, hostname search |
 | Domain Monitor | Domains whose registration changed in the last 7 days |
 | Trend | TLD registration volumes, hot and emerging keywords, prefix trends |
 | Account | Per-endpoint quota and usage |
 
 Search resources share the same shape: keyword or TLD-browse mode, paging up to 500 rows per request, a Return All export toggle, and filters that match the REST parameters. `length` and `age_range` accept a preset band (`5-10`), an exact value (`10`), or a range (`8-12`).
+
+### Bulk lookups
+
+**WHOIS (Bulk)** takes up to 30 domains per request and **DNS Records (Bulk)** up to 20. Both take a `Domains` field rather than a single domain, so put a Code or Aggregate node in front to collect the names into one array and hand that to the node — otherwise n8n runs the node once per incoming item and you gain nothing.
+
+```
+Search → Code (collect domains into one item) → WHOIS (Bulk) → …
+```
+
+Each domain in a batch draws one unit from the same daily quota as the single-domain operation, so a batch of 30 costs what 30 single lookups cost. What you save is requests, not quota: batch calls are capped at 5 per minute.
+
+Bulk DNS returns nameservers and, where those nameservers identify a marketplace or parking service, a `domain_status` of `for_sale` or `parking`. It does not return A, MX or TXT records — use the single-domain DNS operation when you need the full record set.
 
 ### Expired Domain → Search
 

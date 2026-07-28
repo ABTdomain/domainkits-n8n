@@ -36,6 +36,17 @@ export const lookupDescription: INodeProperties[] = [
 				},
 			},
 			{
+				name: 'DNS Records (Bulk)',
+				value: 'dnsBulk',
+				action: 'Get DNS records for many domains',
+				description:
+					'Resolve nameservers for up to 20 domains in one request, with a for-sale or parking label where the nameservers identify one',
+				routing: {
+					request: { method: 'POST', url: '/bulk/dns' },
+					output: { postReceive: [parseDomainKitsResponse] },
+				},
+			},
+			{
 				name: 'EPP Status Guide',
 				value: 'statusGuide',
 				action: 'Explain an EPP status code',
@@ -116,11 +127,42 @@ export const lookupDescription: INodeProperties[] = [
 					output: { postReceive: [parseDomainKitsObject] },
 				},
 			},
+			{
+				name: 'WHOIS (Bulk)',
+				value: 'whoisBulk',
+				action: 'Get WHOIS records for many domains',
+				description:
+					'Registrar, dates, status codes and nameservers for up to 30 domains in one request. No registrant personal data is returned.',
+				routing: {
+					request: { method: 'POST', url: '/bulk/whois' },
+					output: { postReceive: [parseDomainKitsResponse] },
+				},
+			},
 		],
 		default: 'whois',
 	},
 
 	domainProperty(['dns', 'safety', 'typosquat', 'whois']),
+
+	{
+		displayName: 'Domains',
+		name: 'domains',
+		type: 'string',
+		required: true,
+		default: '',
+		placeholder: '={{ $json.domains }}',
+		description:
+			'Domains to look up in one request. Accepts an array from an earlier node or a comma-separated list. Aggregate the items first so this node runs once for the whole batch instead of once per domain.',
+		displayOptions: { show: { ...showForLookup, operation: ['dnsBulk', 'whoisBulk'] } },
+		routing: {
+			send: {
+				type: 'body',
+				property: 'domains',
+				value:
+					'={{ Array.isArray($value) ? $value : String($value).split(",").map(d => d.trim()).filter(Boolean) }}',
+			},
+		},
+	},
 
 	{
 		displayName: 'Query',
