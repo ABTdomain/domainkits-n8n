@@ -20,9 +20,20 @@ Fresh data beats exports: domains move through the lifecycle daily, so point a S
 
 ## Installation
 
-Follow the [community nodes installation guide](https://docs.n8n.io/integrations/community-nodes/installation-and-management/) in the n8n docs.
+In the n8n UI:
 
-Package name: `n8n-nodes-domainkits`
+1. Open **Settings → Community Nodes**.
+2. Click **Install a community node**.
+3. Enter `n8n-nodes-domainkits`, accept the community node notice and click **Install**.
+4. The **DomainKits** node appears in the node panel; search for it in any workflow.
+
+Self-hosted without UI access:
+
+```
+npm install n8n-nodes-domainkits
+```
+
+in your n8n installation directory, then restart n8n. Details in the [community nodes installation guide](https://docs.n8n.io/integrations/community-nodes/installation-and-management/).
 
 ## Credentials
 
