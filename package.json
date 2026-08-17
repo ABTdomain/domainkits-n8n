@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-domainkits",
-	"version": "0.2.7",
+	"version": "0.2.8",
 	"description": "Search newly registered domains, expired domains and four more inventories from n8n, plus WHOIS, DNS and Certificate Transparency lookups. One DomainKits API key covers every endpoint.",
 	"license": "MIT",
 	"homepage": "https://domainkits.com/dev",
