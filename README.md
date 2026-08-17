@@ -9,8 +9,9 @@ This is the official node for the DomainKits API, published and maintained by th
 One API key, every capability as an n8n resource:
 
 - **Six domain inventories** covering the whole lifecycle: newly registered, active, aged, expired, deleted and for-sale. Search by keyword or browse a whole TLD, then narrow with filters.
+- **Two ways to see new registrations**: the zone based search holds 60 days and shows a name once the zone publishes it. The live search reads the last three days from Certificate Transparency, so it reaches names the zone does not carry yet and covers .ai and .io alongside the generic TLDs.
 - **Lookups on demand**: RDAP WHOIS, DNS, safety, typosquat scan, reverse nameserver, IP and registrar checks, including bulk WHOIS and bulk DNS for whole result sets.
-- **Certificate Transparency**: subdomains, certificates, hostname search.
+- **Certificate Transparency**: subdomains, certificates, hostname search. Match the keyword against the registered domain, the full hostname, or subdomains only, which is how you find a brand sitting in front of an unrelated registration. Bound results by log date and choose between the current period and full history.
 - **Monitoring and trends**: domains whose registration changed in the last 7 days, TLD volumes, hot and emerging keywords.
 - **AI Agent ready**: the node is exposed as a tool, so an n8n AI Agent can call it directly and fill in the parameters itself.
 

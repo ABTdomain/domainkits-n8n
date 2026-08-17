@@ -33,6 +33,11 @@ const showForTldMode = {
 	searchMode: ['tld'],
 };
 
+const showForLive = {
+	resource: ['nrd'],
+	operation: ['searchLive'],
+};
+
 export const nrdDescription: INodeProperties[] = [
 	{
 		displayName: 'Operation',
@@ -46,11 +51,27 @@ export const nrdDescription: INodeProperties[] = [
 				value: 'search',
 				action: 'Search newly registered domains',
 				description:
-					'Search newly registered domains by keyword, or browse every new registration under a gTLD',
+					'Search newly registered domains by keyword, or browse every new registration under a gTLD. Reads the zone files, so a name appears once the zone publishes it and stays available for 60 days.',
 				routing: {
 					request: {
 						method: 'GET',
 						url: '/search/nrds',
+					},
+					output: {
+						postReceive: [parseDomainKitsResponse],
+					},
+				},
+			},
+			{
+				name: 'Search Live',
+				value: 'searchLive',
+				action: 'Search newly registered domains seen in certificate logs',
+				description:
+					'Search names from the last three days that were seen in Certificate Transparency logs before the zone files carried them. Reaches names the zone based search cannot show yet, and covers .ai and .io alongside the generic TLDs.',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/search/nrds-live',
 					},
 					output: {
 						postReceive: [parseDomainKitsResponse],
@@ -128,5 +149,49 @@ export const nrdDescription: INodeProperties[] = [
 		],
 	},
 
+	keywordProperty(showForLive, 'dental'),
+	...paginationProperties(showForLive),
+
+	{
+		displayName: 'Filters',
+		name: 'liveFilters',
+		type: 'collection',
+		placeholder: 'Add Filter',
+		default: {},
+		displayOptions: { show: showForLive },
+		options: [
+			compositionFilter,
+			excludeKeywordsFilter,
+			lengthFilter,
+			noHyphensFilter,
+			noNumbersFilter,
+			{
+				displayName: 'Seen Within',
+				name: 'days_range',
+				type: 'options',
+				default: '0-10',
+				description: 'How recently the name was seen, in days. The live feed holds three days.',
+				options: [
+					{ name: '0 to 10 Days', value: '0-10' },
+					{ name: '10 to 20 Days', value: '10-20' },
+					{ name: '20 Days and Over', value: '20+' },
+				],
+				routing: { request: { qs: { days_range: '={{$value}}' } } },
+			},
+			sortFilter(
+				[
+					{ name: 'Alphabetical', value: 'alpha' },
+					{ name: 'Length (Longest First)', value: 'length_desc' },
+					{ name: 'Length (Shortest First)', value: 'length_asc' },
+					{ name: 'Registered (Newest First)', value: 'reg_date_desc' },
+					{ name: 'Registered (Oldest First)', value: 'reg_date_asc' },
+				],
+				'reg_date_desc',
+			),
+			tldFilter,
+		],
+	},
+
 	keywordPositionProperty(showForKeywordMode),
+	keywordPositionProperty(showForLive),
 ];
