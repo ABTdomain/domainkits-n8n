@@ -45,7 +45,7 @@ In n8n, create a new **DomainKits API** credential and paste the key (it starts 
 ## Usage notes
 
 - **Bulk lookups**: collect domains into one item first (Code or Aggregate node), then hand the array to the bulk operation. Batches draw from the same daily quota as single lookups.
-- **Coverage is gTLDs only.** Country-code TLDs like `.de` or `.us` return an empty result set, not an error.
+- **Coverage is gTLDs only** for the zone based searches. Country-code TLDs like `.de` or `.us` return an empty result set, not an error. The live search is the exception and also carries `.ai` and `.io`.
 - **Return All** exports up to 50,000 rows in one request on a separate, small export quota. Use paged mode for anything recurring.
 
 Every parameter, filter and current limit is documented in the [API reference](https://domainkits.com/dev/api-docs).
