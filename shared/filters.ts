@@ -33,9 +33,9 @@ export function keywordProperty(show: ShowRule, placeholder = 'tech'): INodeProp
 		required: true,
 		default: '',
 		placeholder,
-		description: 'Keyword to match. Minimum 3 characters.',
+		description: 'Keyword matched as a substring of the name portion. Minimum 2 characters.',
 		displayOptions: { show },
-		routing: { request: { qs: { keyword: '={{$value}}' } } },
+		routing: { request: { qs: { query: '={{$value}}' } } },
 	};
 }
 
@@ -48,7 +48,7 @@ export function tldProperty(show: ShowRule): INodeProperties {
 		default: 'com',
 		placeholder: 'com',
 		description:
-			'The gTLD to browse, without a leading dot. Only gTLDs are indexed; ccTLDs are not supported.',
+			'The gTLD to browse, without a leading dot. Comma-separated for several. Only gTLDs are indexed; ccTLDs are not supported.',
 		displayOptions: { show },
 		routing: { request: { qs: { tld: '={{$value}}' } } },
 	};
@@ -59,13 +59,14 @@ export function keywordPositionProperty(show: ShowRule): INodeProperties {
 		displayName: 'Keyword Position',
 		name: 'position',
 		type: 'options',
-		default: 'contain',
-		description: 'Where the keyword must appear in the domain name',
+		default: '',
+		description: 'Where the keyword must appear in the name portion',
 		displayOptions: { show },
 		options: [
-			{ name: 'Anywhere', value: 'contain' },
+			{ name: 'Anywhere', value: '' },
 			{ name: 'At the Start', value: 'start' },
 			{ name: 'At the End', value: 'end' },
+			{ name: 'In the Middle', value: 'middle' },
 		],
 		routing: { request: { qs: { position: '={{$value}}' } } },
 	};
@@ -80,7 +81,7 @@ export function returnAllProperties(show: ShowRule): INodeProperties[] {
 			default: false,
 			displayOptions: { show },
 			description:
-				'Whether to fetch every match in one export request (up to 50,000 domains) instead of a single page. Export draws on a small separate quota (10 per day and 100 per month on Premium), so prefer paging for workflows that run on a schedule.',
+				'Whether to fetch every match in one export request (up to 50,000 domains) instead of a single page. Export draws on a small separate quota with a monthly cap, so prefer paging for workflows that run on a schedule.',
 		},
 		{
 			displayName: 'Export Format',
@@ -120,17 +121,45 @@ export function paginationProperties(show: ShowRule): INodeProperties[] {
 	];
 }
 
+// 每个取值挂自己的 routing: 引擎的形态筛选是四个独立布尔, 下拉选一种发一种。
 export const compositionFilter: INodeProperties = {
 	displayName: 'Composition',
 	name: 'type',
 	type: 'options',
 	default: 'all_alpha',
-	description: 'Restrict to names made up only of letters or only of digits',
+	description: 'Restrict by the characters the name is made of',
 	options: [
-		{ name: 'Letters Only', value: 'all_alpha' },
-		{ name: 'Numbers Only', value: 'all_number' },
+		{
+			name: 'Letters Only',
+			value: 'all_alpha',
+			routing: { request: { qs: { all_alpha: 'true' } } },
+		},
+		{
+			name: 'Numbers Only',
+			value: 'all_number',
+			routing: { request: { qs: { all_number: 'true' } } },
+		},
+		{
+			name: 'Has Digits',
+			value: 'has_number',
+			routing: { request: { qs: { has_number: 'true' } } },
+		},
+		{
+			name: 'No Digits',
+			value: 'no_number',
+			routing: { request: { qs: { has_number: 'false' } } },
+		},
+		{
+			name: 'Has Hyphen',
+			value: 'has_hyphen',
+			routing: { request: { qs: { has_hyphen: 'true' } } },
+		},
+		{
+			name: 'No Hyphens',
+			value: 'no_hyphen',
+			routing: { request: { qs: { has_hyphen: 'false' } } },
+		},
 	],
-	routing: { request: { qs: { type: '={{$value}}' } } },
 };
 
 export const excludeKeywordsFilter: INodeProperties = {
@@ -140,36 +169,27 @@ export const excludeKeywordsFilter: INodeProperties = {
 	default: '',
 	placeholder: 'shop,store',
 	description: 'Negative keywords to drop from the results',
-	routing: { request: { qs: { exclude: '={{$value}}' } } },
+	routing: { request: { qs: { exclude_query: '={{$value}}' } } },
 };
 
-export const lengthFilter: INodeProperties = {
-	displayName: 'Length',
-	name: 'length',
-	type: 'string',
-	default: '',
-	placeholder: '5-10',
-	description:
-		'Length of the domain name, excluding the TLD. Accepts a preset band (<code>&lt;5</code>, <code>5-10</code>, <code>10-15</code>, <code>15+</code>), an exact length (<code>10</code>), or a range (<code>8-12</code>, inclusive of both ends).',
-	routing: { request: { qs: { length: '={{$value}}' } } },
+export const lengthMinFilter: INodeProperties = {
+	displayName: 'Length Min',
+	name: 'length_min',
+	type: 'number',
+	default: 1,
+	typeOptions: { minValue: 1, maxValue: 63 },
+	description: 'Minimum length of the name portion, excluding the TLD',
+	routing: { request: { qs: { length_min: '={{$value}}' } } },
 };
 
-export const noHyphensFilter: INodeProperties = {
-	displayName: 'No Hyphens',
-	name: 'no_hyphen',
-	type: 'boolean',
-	default: false,
-	description: 'Whether to exclude domains containing hyphens',
-	routing: { request: { qs: { no_hyphen: '={{$value}}' } } },
-};
-
-export const noNumbersFilter: INodeProperties = {
-	displayName: 'No Numbers',
-	name: 'no_number',
-	type: 'boolean',
-	default: false,
-	description: 'Whether to exclude domains containing digits',
-	routing: { request: { qs: { no_number: '={{$value}}' } } },
+export const lengthMaxFilter: INodeProperties = {
+	displayName: 'Length Max',
+	name: 'length_max',
+	type: 'number',
+	default: 63,
+	typeOptions: { minValue: 1, maxValue: 63 },
+	description: 'Maximum length of the name portion, excluding the TLD',
+	routing: { request: { qs: { length_max: '={{$value}}' } } },
 };
 
 export const tldFilter: INodeProperties = {
@@ -179,7 +199,7 @@ export const tldFilter: INodeProperties = {
 	default: '',
 	placeholder: 'com',
 	description:
-		'Restrict keyword results to a single gTLD, without a leading dot. Only gTLDs are indexed; a ccTLD such as de or io returns no results.',
+		'Restrict keyword results to gTLDs, without a leading dot, comma-separated for several. Only gTLDs are indexed; a ccTLD such as de or io returns no results.',
 	routing: { request: { qs: { tld: '={{$value}}' } } },
 };
 
@@ -198,33 +218,63 @@ export function sortFilter(
 	};
 }
 
-export function ageRangeFilter(bands: string): INodeProperties {
+export const ageMinFilter: INodeProperties = {
+	displayName: 'Age Min',
+	name: 'age_min',
+	type: 'number',
+	default: 0,
+	typeOptions: { minValue: 0, maxValue: 100 },
+	description: 'Minimum age of the domain in years',
+	routing: { request: { qs: { age_min: '={{$value}}' } } },
+};
+
+export const ageMaxFilter: INodeProperties = {
+	displayName: 'Age Max',
+	name: 'age_max',
+	type: 'number',
+	default: 100,
+	typeOptions: { minValue: 0, maxValue: 100 },
+	description: 'Maximum age of the domain in years',
+	routing: { request: { qs: { age_max: '={{$value}}' } } },
+};
+
+export function foundDateStartFilter(subject: string): INodeProperties {
 	return {
-		displayName: 'Age',
-		name: 'age_range',
+		displayName: 'Observed From',
+		name: 'found_date_start',
 		type: 'string',
 		default: '',
-		placeholder: '10-20',
-		description: `Age of the domain in years. Accepts a preset band (${bands}), an exact age (<code>25</code>), or a range (<code>20-25</code>, inclusive of both ends). Combine with a comma to widen the search.`,
-		routing: { request: { qs: { age_range: '={{$value}}' } } },
+		placeholder: '2026-08-01',
+		description: `Range start for the date ${subject}, in YYYY-MM-DD format, inclusive`,
+		routing: { request: { qs: { found_date_start: '={{$value}}' } } },
 	};
 }
 
-export function newFilter(subject: string): INodeProperties {
+export function foundDateEndFilter(subject: string): INodeProperties {
 	return {
-		displayName: 'New Within',
-		name: 'new',
-		type: 'options',
-		default: '3',
-		description: `Only ${subject}, based on the most recent observed day`,
-		options: [
-			{ name: 'Last 2 Days', value: '2' },
-			{ name: 'Last 3 Days', value: '3' },
-			{ name: 'Last Day', value: '1' },
-		],
-		routing: { request: { qs: { new: '={{$value}}' } } },
+		displayName: 'Observed To',
+		name: 'found_date_end',
+		type: 'string',
+		default: '',
+		placeholder: '2026-08-15',
+		description: `Range end for the date ${subject}, in YYYY-MM-DD format, inclusive`,
+		routing: { request: { qs: { found_date_end: '={{$value}}' } } },
 	};
 }
+
+export const listedWithinFilter: INodeProperties = {
+	displayName: 'Listed Within',
+	name: 'listed_days_max',
+	type: 'options',
+	default: 3,
+	description: 'Only listings that first appeared on a marketplace in the last N days',
+	options: [
+		{ name: 'Last Day', value: 1 },
+		{ name: 'Last 2 Days', value: 2 },
+		{ name: 'Last 3 Days', value: 3 },
+	],
+	routing: { request: { qs: { listed_days_max: '={{$value}}' } } },
+};
 
 export const hasSaleFilter: INodeProperties = {
 	displayName: 'Has Marketplace Listing',
@@ -240,19 +290,28 @@ export const platformFilter: INodeProperties = {
 	name: 'platform',
 	type: 'string',
 	default: '',
-	placeholder: 'Sedo,Godaddy',
+	placeholder: 'sedo,afternic',
 	description:
-		'Marketplace the domain is listed on. Case-insensitive; combine with a comma. Values include Afternic, Atom, BuyDomains, Dan, DDD, DN.com, Godaddy, Hugedomains, SawSells, Sedo, Venture and 4.cn.',
+		'Marketplace the domain is listed on. Case-insensitive; combine with a comma. An unknown name returns 400 with the supported values.',
 	routing: { request: { qs: { platform: '={{$value}}' } } },
 };
 
-export const regDateFilter: INodeProperties = {
-	displayName: 'Registration Date',
-	name: 'reg_date',
+export const createDateStartFilter: INodeProperties = {
+	displayName: 'Registered From',
+	name: 'create_date_start',
 	type: 'string',
 	default: '',
-	placeholder: '2026-07-10',
-	description:
-		'Registration date. Accepts a day (<code>2026-07-10</code>), a month (<code>2026-07</code>), a year (<code>2026</code>), or a <code>from:to</code> range, where either side may be omitted.',
-	routing: { request: { qs: { reg_date: '={{$value}}' } } },
+	placeholder: '2026-07-01',
+	description: 'Range start for the registration date, in YYYY-MM-DD format, inclusive',
+	routing: { request: { qs: { create_date_start: '={{$value}}' } } },
+};
+
+export const createDateEndFilter: INodeProperties = {
+	displayName: 'Registered To',
+	name: 'create_date_end',
+	type: 'string',
+	default: '',
+	placeholder: '2026-07-31',
+	description: 'Range end for the registration date, in YYYY-MM-DD format, inclusive',
+	routing: { request: { qs: { create_date_end: '={{$value}}' } } },
 };

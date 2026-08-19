@@ -3,10 +3,11 @@ import { parseDomainKitsResponse } from '../../../shared/output';
 import {
 	compositionFilter,
 	excludeKeywordsFilter,
-	lengthFilter,
-	newFilter,
-	noHyphensFilter,
-	noNumbersFilter,
+	keywordProperty,
+	keywordPositionProperty,
+	lengthMinFilter,
+	lengthMaxFilter,
+	listedWithinFilter,
 	paginationProperties,
 	platformFilter,
 	returnAllProperties,
@@ -60,18 +61,7 @@ export const marketDescription: INodeProperties[] = [
 	},
 
 	searchModeProperty(showForMarket),
-	{
-		displayName: 'Keyword',
-		name: 'keyword',
-		type: 'string',
-		required: true,
-		default: '',
-		placeholder: 'shop',
-		description:
-			'Keyword to match, no minimum length. Matches the start of the name by default; use Keyword Position to match anywhere.',
-		displayOptions: { show: showForKeywordMode },
-		routing: { request: { qs: { keyword: '={{$value}}' } } },
-	},
+	keywordProperty(showForKeywordMode, 'shop'),
 	tldProperty(showForTldMode),
 
 	...returnAllProperties(showForMarket),
@@ -87,18 +77,17 @@ export const marketDescription: INodeProperties[] = [
 		options: [
 			compositionFilter,
 			excludeKeywordsFilter,
-			lengthFilter,
+			lengthMinFilter,
+			lengthMaxFilter,
 			platformFilter,
-			newFilter('listings that first appeared on a marketplace recently'),
-			noHyphensFilter,
-			noNumbersFilter,
+			listedWithinFilter,
 			sortFilter(
 				[
 					{ name: 'Alphabetical', value: 'alpha' },
 					{ name: 'Length (Longest First)', value: 'length_desc' },
 					{ name: 'Length (Shortest First)', value: 'length_asc' },
-					{ name: 'TLD Count (High to Low)', value: 'tld_counter_desc' },
-					{ name: 'TLD Count (Low to High)', value: 'tld_counter_asc' },
+					{ name: 'TLD Count (High to Low)', value: 'tld_count_desc' },
+					{ name: 'TLD Count (Low to High)', value: 'tld_count_asc' },
 				],
 				'length_asc',
 			),
@@ -106,19 +95,5 @@ export const marketDescription: INodeProperties[] = [
 		],
 	},
 
-	{
-		displayName: 'Keyword Position',
-		name: 'position',
-		type: 'options',
-		default: 'start',
-		description:
-			'Where the keyword must appear in the domain name. This endpoint defaults to the start of the name.',
-		displayOptions: { show: showForKeywordMode },
-		options: [
-			{ name: 'Anywhere', value: 'contain' },
-			{ name: 'At the End', value: 'end' },
-			{ name: 'At the Start', value: 'start' },
-		],
-		routing: { request: { qs: { position: '={{$value}}' } } },
-	},
+	keywordPositionProperty(showForKeywordMode),
 ];

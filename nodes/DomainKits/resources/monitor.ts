@@ -1,5 +1,6 @@
 import type { INodeProperties } from 'n8n-workflow';
 import { parseDomainKitsResponse } from '../../../shared/output';
+import { compositionFilter } from '../../../shared/filters';
 
 const showForMonitor = { resource: ['monitor'] };
 
@@ -16,7 +17,7 @@ export const monitorDescription: INodeProperties[] = [
 				value: 'changes',
 				action: 'List recent domain changes',
 				description:
-					'Domains whose registration changed in the last 7 days: transfers, nameserver changes, expiries and new registrations',
+					'Change events from the last 7 days: transfers, nameserver changes, expiries and new registrations. Each row is one event.',
 				routing: {
 					request: { method: 'GET', url: '/monitor/changes' },
 					output: { postReceive: [parseDomainKitsResponse] },
@@ -37,37 +38,43 @@ export const monitorDescription: INodeProperties[] = [
 			{
 				displayName: 'Change Reason',
 				name: 'reason',
-				type: 'string',
-				default: '',
-				placeholder: 'transfer',
-				description: 'Restrict to one change reason, such as transfer or nameserver change',
+				type: 'options',
+				default: 'nameserver_change',
+				description: 'Restrict to one change reason',
+				options: [
+					{ name: 'Domain Expired', value: 'domain_expired' },
+					{ name: 'Domain Transfer', value: 'domain_transfer' },
+					{ name: 'Nameserver Change', value: 'nameserver_change' },
+					{ name: 'New Registration', value: 'new_registration' },
+				],
 				routing: { request: { qs: { reason: '={{$value}}' } } },
 			},
-			{
-				displayName: 'Digits Only',
-				name: 'type',
-				type: 'options',
-				default: 'all_number',
-				description: 'Restrict to names made up only of digits',
-				options: [{ name: 'Numbers Only', value: 'all_number' }],
-				routing: { request: { qs: { type: '={{$value}}' } } },
-			},
+			compositionFilter,
 			{
 				displayName: 'Keyword',
 				name: 'keyword',
 				type: 'string',
 				default: '',
-				description: 'Substring the domain names must contain',
-				routing: { request: { qs: { keyword: '={{$value}}' } } },
+				description: 'Substring the name portion must contain, minimum 2 characters',
+				routing: { request: { qs: { query: '={{$value}}' } } },
 			},
 			{
-				displayName: 'Length',
-				name: 'length',
+				displayName: 'Length Max',
+				name: 'length_max',
 				type: 'number',
-				default: 0,
-				typeOptions: { minValue: 0 },
-				description: 'Exact length of the domain name, excluding the TLD',
-				routing: { request: { qs: { length: '={{$value}}' } } },
+				default: 63,
+				typeOptions: { minValue: 1, maxValue: 63 },
+				description: 'Maximum length of the name portion, excluding the TLD',
+				routing: { request: { qs: { length_max: '={{$value}}' } } },
+			},
+			{
+				displayName: 'Length Min',
+				name: 'length_min',
+				type: 'number',
+				default: 1,
+				typeOptions: { minValue: 1, maxValue: 63 },
+				description: 'Minimum length of the name portion, excluding the TLD',
+				routing: { request: { qs: { length_min: '={{$value}}' } } },
 			},
 			{
 				displayName: 'Limit',
@@ -79,12 +86,23 @@ export const monitorDescription: INodeProperties[] = [
 				routing: { request: { qs: { limit: '={{$value}}' } } },
 			},
 			{
-				displayName: 'No Numbers',
-				name: 'no_number',
-				type: 'boolean',
-				default: true,
-				description: 'Whether to exclude domains containing digits',
-				routing: { request: { qs: { no_number: '={{$value}}' } } },
+				displayName: 'Observed From',
+				name: 'found_date_start',
+				type: 'string',
+				default: '',
+				placeholder: '2026-08-15',
+				description:
+					'Range start for the date the change was observed, in YYYY-MM-DD format, inclusive. The window holds 7 days.',
+				routing: { request: { qs: { found_date_start: '={{$value}}' } } },
+			},
+			{
+				displayName: 'Observed To',
+				name: 'found_date_end',
+				type: 'string',
+				default: '',
+				placeholder: '2026-08-19',
+				description: 'Range end for the date the change was observed, in YYYY-MM-DD format, inclusive',
+				routing: { request: { qs: { found_date_end: '={{$value}}' } } },
 			},
 			{
 				displayName: 'Offset',
@@ -101,7 +119,7 @@ export const monitorDescription: INodeProperties[] = [
 				type: 'string',
 				default: '',
 				placeholder: 'com',
-				description: 'Restrict to one gTLD, without a leading dot',
+				description: 'Restrict to gTLDs, without a leading dot, comma-separated for several',
 				routing: { request: { qs: { tld: '={{$value}}' } } },
 			},
 		],

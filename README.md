@@ -52,7 +52,7 @@ Every parameter, filter and current limit is documented in the [API reference](h
 
 ## Examples
 
-**Drop-day alert**: Schedule Trigger (daily) → DomainKits (Expired, keyword `clinic`, auction date `tomorrow`) → If (matches your list) → Slack.
+**Drop-day alert**: Schedule Trigger (daily) → DomainKits (Expired, keyword `clinic`, auction window set to tomorrow) → If (matches your list) → Slack.
 
 **Brand watch**: Schedule Trigger (daily) → DomainKits (Newly Registered, keyword `yourbrand`) → If (new since last run) → Slack.
 

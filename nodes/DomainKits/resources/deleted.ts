@@ -1,15 +1,16 @@
 import type { INodeProperties } from 'n8n-workflow';
 import { parseDomainKitsResponse } from '../../../shared/output';
 import {
-	ageRangeFilter,
+	ageMinFilter,
+	ageMaxFilter,
 	compositionFilter,
 	excludeKeywordsFilter,
 	keywordPositionProperty,
 	keywordProperty,
-	lengthFilter,
-	newFilter,
-	noHyphensFilter,
-	noNumbersFilter,
+	lengthMinFilter,
+	lengthMaxFilter,
+	foundDateStartFilter,
+	foundDateEndFilter,
 	paginationProperties,
 	returnAllProperties,
 	sortFilter,
@@ -34,7 +35,7 @@ export const deletedDescription: INodeProperties[] = [
 				value: 'search',
 				action: 'Search deleted domains',
 				description:
-					'Search domains that dropped and became available again. Keyword search only; there is no TLD browse mode for this type.',
+					'Search domains that dropped and became available again by keyword',
 				routing: {
 					request: {
 						method: 'GET',
@@ -62,25 +63,26 @@ export const deletedDescription: INodeProperties[] = [
 		default: {},
 		displayOptions: { show: showForDeleted },
 		options: [
-			ageRangeFilter('<code>0-5</code>, <code>5-10</code>, <code>10-20</code>, <code>20+</code>'),
+			ageMinFilter,
+			ageMaxFilter,
 			compositionFilter,
 			excludeKeywordsFilter,
 			{
 				displayName: 'Hold Status',
-				name: 'hold',
+				name: 'has_hold',
 				type: 'options',
-				default: 'no_hold',
+				default: 'false',
 				description: 'Whether the domain carries a registry hold',
 				options: [
-					{ name: 'No Hold', value: 'no_hold' },
-					{ name: 'Has Hold', value: 'has_hold' },
+					{ name: 'No Hold', value: 'false' },
+					{ name: 'Has Hold', value: 'true' },
 				],
-				routing: { request: { qs: { hold: '={{$value}}' } } },
+				routing: { request: { qs: { has_hold: '={{$value}}' } } },
 			},
-			lengthFilter,
-			newFilter('domains that dropped recently'),
-			noHyphensFilter,
-			noNumbersFilter,
+			lengthMinFilter,
+			lengthMaxFilter,
+			foundDateStartFilter('the drop was observed'),
+			foundDateEndFilter('the drop was observed'),
 			sortFilter(
 				[
 					{ name: 'Age (Oldest First)', value: 'age_desc' },

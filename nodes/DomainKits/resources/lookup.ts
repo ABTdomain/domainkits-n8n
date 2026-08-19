@@ -110,7 +110,7 @@ export const lookupDescription: INodeProperties[] = [
 				name: 'Typosquat Scan',
 				value: 'typosquat',
 				action: 'Scan for typosquats',
-				description: 'Generate typo variants of a domain and report which are registered',
+				description: 'Generate 13 classes of lookalike variants of a domain and report which are registered',
 				routing: {
 					request: { method: 'GET', url: '/typosquat' },
 					output: { postReceive: [parseDomainKitsResponse] },
@@ -232,20 +232,27 @@ export const lookupDescription: INodeProperties[] = [
 				name: 'type',
 				type: 'options',
 				default: 'all_alpha',
-				description: 'Restrict to names made up only of letters or only of digits',
+				description: 'Restrict by the characters the name is made of',
 				options: [
-					{ name: 'Letters Only', value: 'all_alpha' },
-					{ name: 'Numbers Only', value: 'all_number' },
+					{
+						name: 'Letters Only',
+						value: 'all_alpha',
+						routing: { request: { qs: { all_alpha: 'true' } } },
+					},
+					{
+						name: 'Numbers Only',
+						value: 'all_number',
+						routing: { request: { qs: { all_number: 'true' } } },
+					},
 				],
-				routing: { request: { qs: { type: '={{$value}}' } } },
 			},
 			{
 				displayName: 'Keyword',
 				name: 'keyword',
 				type: 'string',
 				default: '',
-				description: 'Substring the domain names must contain',
-				routing: { request: { qs: { keyword: '={{$value}}' } } },
+				description: 'Substring the name portion must contain, minimum 2 characters',
+				routing: { request: { qs: { query: '={{$value}}' } } },
 			},
 			{
 				displayName: 'Limit',
@@ -286,12 +293,16 @@ export const lookupDescription: INodeProperties[] = [
 		displayOptions: { show: { ...showForLookup, operation: ['typosquat'] } },
 		options: [
 			{
-				displayName: 'Include Unregistered',
-				name: 'unregistered',
-				type: 'boolean',
-				default: false,
-				description: 'Whether to include variants that are not registered',
-				routing: { request: { qs: { unregistered: '={{$value}}' } } },
+				displayName: 'Registration Status',
+				name: 'registered',
+				type: 'options',
+				default: 'true',
+				description: 'Keep only registered or only unregistered variants; the default response carries both',
+				options: [
+					{ name: 'Registered Only', value: 'true' },
+					{ name: 'Unregistered Only', value: 'false' },
+				],
+				routing: { request: { qs: { registered: '={{$value}}' } } },
 			},
 			{
 				displayName: 'Include WHOIS',
