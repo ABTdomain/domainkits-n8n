@@ -121,7 +121,6 @@ export function paginationProperties(show: ShowRule): INodeProperties[] {
 	];
 }
 
-// 每个取值挂自己的 routing: 引擎的形态筛选是四个独立布尔, 下拉选一种发一种。
 export const compositionFilter: INodeProperties = {
 	displayName: 'Composition',
 	name: 'type',
