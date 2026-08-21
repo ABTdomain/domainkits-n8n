@@ -4,20 +4,11 @@ Query the [DomainKits](https://domainkits.com) domain data API from inside [n8n]
 
 This is the official node for the DomainKits API, published and maintained by the DomainKits team. DomainKits is built and operated by Lyalpha GmbH, with domain data and infrastructure provided by [ABTdomain](https://abtdomain.com), our domain intelligence and data aggregation platform. This repository is hosted under the ABTdomain GitHub organisation. Learn more about the relationship at [domainkits.com/about](https://domainkits.com/about).
 
-## What you get
+One API key, every capability as an n8n resource. Every parameter, response field and current limit is documented in the [API reference](https://domainkits.com/dev/api-docs) and the [OpenAPI spec](https://domainkits.com/dev/openapi.yaml). This README only lists what the node covers.
 
-One API key, every capability as an n8n resource:
-
-- **Six domain inventories** covering the whole lifecycle: newly registered, active, aged, expired, deleted and for-sale. Search by keyword or browse a whole TLD, then narrow with filters.
-- **Two ways to see new registrations**: the zone based search holds 60 days and shows a name once the zone publishes it. The live search reads the last three days from Certificate Transparency, so it reaches names the zone does not carry yet and covers .ai and .io alongside the generic TLDs.
-- **Lookups on demand**: RDAP WHOIS, DNS, safety, typosquat scan, reverse nameserver, IP and registrar checks, including bulk WHOIS and bulk DNS for whole result sets.
-- **Certificate Transparency**: subdomains, certificates, hostname search. Match the keyword against the registered domain, the full hostname, or subdomains only, which is how you find a brand sitting in front of an unrelated registration. Bound results by log date and choose between the current period and full history.
-- **Monitoring and trends**: domains whose registration changed in the last 7 days, TLD volumes, hot and emerging keywords.
-- **AI Agent ready**: the node is exposed as a tool, so an n8n AI Agent can call it directly and fill in the parameters itself.
+**AI Agent ready**: the node is exposed as a tool, so an n8n AI Agent can call it directly and fill in the parameters itself.
 
 **No PII.** No operation returns registrant personal data.
-
-Fresh data beats exports: domains move through the lifecycle daily, so point a Schedule Trigger at this node and the same question gets answered against current data every run.
 
 ## Installation
 
@@ -42,21 +33,45 @@ You need a DomainKits API key. Sign up at [domainkits.com](https://domainkits.co
 
 In n8n, create a new **DomainKits API** credential and paste the key (it starts with `dk_`). The credential test never burns a search request.
 
-## Usage notes
+## Resources and operations
 
-- **Bulk lookups**: collect domains into one item first (Code or Aggregate node), then hand the array to the bulk operation. Batches draw from the same daily quota as single lookups.
-- **Coverage is gTLDs only** for the zone based searches. Country-code TLDs like `.de` or `.us` return an empty result set, not an error. The live search is the exception and also carries `.ai` and `.io`.
-- **Return All** exports up to 50,000 rows in one request on a separate, small export quota. Use paged mode for anything recurring.
+| Resource | Operation | Endpoint |
+|---|---|---|
+| Newly Registered | Search | `/search/nrds` |
+| Newly Registered | Search Live | `/search/nrds-live` |
+| Expired | Search | `/search/expired` |
+| Aged | Search | `/search/aged` |
+| Active | Search | `/search/active` |
+| Deleted | Search | `/search/deleted` |
+| Market | Search | `/search/market` |
+| Lookup | WHOIS | `/whois` |
+| Lookup | Bulk WHOIS | `/bulk/whois` |
+| Lookup | DNS | `/dns` |
+| Lookup | Bulk DNS | `/bulk/dns` |
+| Lookup | Safety | `/safety` |
+| Lookup | IP | `/ip-lookup` |
+| Lookup | Registrar | `/registrar` |
+| Lookup | Status Guide | `/status-guide` |
+| Lookup | TLD Check | `/tld-check` |
+| Lookup | Typosquat | `/typosquat` |
+| Lookup | Reverse Nameserver | `/ns-reverse` |
+| Monitor | Changes | `/monitor/changes` |
+| Certificate Transparency | Subdomains | `/ct/subdomains` |
+| Certificate Transparency | Certificates | `/ct/certs` |
+| Certificate Transparency | Search | `/ct/search` |
+| Trends | TLDs | `/trends/tlds/*` |
+| Trends | Keywords | `/trends/keywords/*` |
+| Account | Usage | `/usage` |
 
-Every parameter, filter and current limit is documented in the [API reference](https://domainkits.com/dev/api-docs).
+The [API reference](https://domainkits.com/dev/api-docs) is the authority on every filter, field and limit.
 
 ## Examples
 
-**Drop-day alert**: Schedule Trigger (daily) → DomainKits (Expired, keyword `clinic`, auction window set to tomorrow) → If (matches your list) → Slack.
-
 **Brand watch**: Schedule Trigger (daily) → DomainKits (Newly Registered, keyword `yourbrand`) → If (new since last run) → Slack.
 
-**Aged shortlist**: Schedule Trigger (weekly) → DomainKits (Expired, browse TLD `com`, age 20+, letters only) → Google Sheets.
+**Drop-day alert**: Schedule Trigger (daily) → DomainKits (Expired, keyword `clinic`) → If (matches your list) → Slack.
+
+**Aged shortlist**: Schedule Trigger (weekly) → DomainKits (Expired, browse TLD `com`) → Google Sheets.
 
 ## Compatibility
 
