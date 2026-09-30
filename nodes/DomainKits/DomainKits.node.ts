@@ -45,7 +45,7 @@ const resources = [
 	{
 		name: 'Domain Lookup',
 		value: 'lookup',
-		description: 'WHOIS, DNS, safety, typosquat and other single-domain lookups',
+		description: 'WHOIS, DNS, typosquat and other single-domain lookups',
 		properties: lookupDescription,
 	},
 	{

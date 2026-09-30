@@ -87,16 +87,6 @@ export const lookupDescription: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Safety Check',
-				value: 'safety',
-				action: 'Check domain safety',
-				description: 'Google Safe Browsing verdict and search index presence for a domain',
-				routing: {
-					request: { method: 'GET', url: '/safety' },
-					output: { postReceive: [parseDomainKitsObject] },
-				},
-			},
-			{
 				name: 'TLD Availability',
 				value: 'tldCheck',
 				action: 'Check availability of a name',
@@ -142,7 +132,7 @@ export const lookupDescription: INodeProperties[] = [
 		default: 'whois',
 	},
 
-	domainProperty(['dns', 'safety', 'typosquat', 'whois']),
+	domainProperty(['dns', 'typosquat', 'whois']),
 
 	{
 		displayName: 'Domains',

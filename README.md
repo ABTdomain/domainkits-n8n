@@ -29,7 +29,7 @@ in your n8n installation directory, then restart n8n. Details in the [community 
 
 ## Credentials
 
-You need a DomainKits API key. Sign up at [domainkits.com](https://domainkits.com/pricing). API access requires a Premium or higher plan, and Premium includes a trial period.
+You need a DomainKits API key. Sign up at [domainkits.com](https://domainkits.com/pricing). API access requires a Premium or higher plan.
 
 In n8n, create a new **DomainKits API** credential and paste the key (it starts with `dk_`). The credential test never burns a search request.
 
@@ -48,7 +48,6 @@ In n8n, create a new **DomainKits API** credential and paste the key (it starts 
 | Lookup | Bulk WHOIS | `/bulk/whois` |
 | Lookup | DNS | `/dns` |
 | Lookup | Bulk DNS | `/bulk/dns` |
-| Lookup | Safety | `/safety` |
 | Lookup | IP | `/ip-lookup` |
 | Lookup | Registrar | `/registrar` |
 | Lookup | Status Guide | `/status-guide` |
