@@ -100,10 +100,14 @@ export async function parseDomainKitsResponse(
 
 	const rows = (envelope.data ?? []) as unknown[];
 	const total = envelope.total;
+	const window = envelope.window;
 
 	return rows.map((row) => {
 		const json = typeof row === 'string' ? { domain: row } : (row as IDataObject);
-		return { json: total === undefined ? json : { ...json, _total: total } };
+		const extra: IDataObject = {};
+		if (total !== undefined) extra._total = total;
+		if (window !== undefined) extra._window = window;
+		return { json: { ...json, ...extra } };
 	});
 }
 

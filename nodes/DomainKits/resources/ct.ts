@@ -71,30 +71,6 @@ const loggedBeforeOption: INodeProperties = {
 	routing: { request: { qs: { before: '={{$value}}' } } },
 };
 
-const sortOption: INodeProperties = {
-	displayName: 'Sort',
-	name: 'sort',
-	type: 'options',
-	default: 'newest',
-	description: 'Order of the returned records',
-	options: [
-		{ name: 'Last Logged', value: 'newest' },
-		{ name: 'Latest Expiry', value: 'latest' },
-	],
-	routing: { request: { qs: { sort: '={{$value}}' } } },
-};
-
-const tldOption: INodeProperties = {
-	displayName: 'TLD',
-	name: 'tld',
-	type: 'string',
-	default: '',
-	placeholder: 'com',
-	description:
-		'Restrict search results to one TLD, without a leading dot. Search covers generic TLDs; two letter country TLDs are not returned.',
-	routing: { request: { qs: { tld: '={{$value}}' } } },
-};
-
 function ctOptions(operation: string, options: INodeProperties[]): INodeProperties {
 	return {
 		displayName: 'Options',
@@ -126,16 +102,6 @@ export const ctDescription: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Search',
-				value: 'search',
-				action: 'Search certificate transparency logs',
-				description: 'Search hostnames observed in Certificate Transparency logs by keyword',
-				routing: {
-					request: { method: 'GET', url: '/ct/search' },
-					output: { postReceive: [parseDomainKitsResponse] },
-				},
-			},
-			{
 				name: 'Subdomains',
 				value: 'subdomains',
 				action: 'List subdomains of a domain',
@@ -160,32 +126,6 @@ export const ctDescription: INodeProperties[] = [
 		displayOptions: { show: { ...showForCt, operation: ['certs', 'subdomains'] } },
 		routing: { request: { qs: { domain: '={{$value}}' } } },
 	},
-	{
-		displayName: 'Keyword',
-		name: 'keyword',
-		type: 'string',
-		required: true,
-		default: '',
-		placeholder: 'login',
-		description: 'Search keyword, minimum 3 characters',
-		displayOptions: { show: { ...showForCt, operation: ['search'] } },
-		routing: { request: { qs: { keyword: '={{$value}}' } } },
-	},
-	{
-		displayName: 'Match Against',
-		name: 'field',
-		type: 'options',
-		default: 'reg',
-		description:
-			'Where the keyword has to appear. Registered domain returns every hostname under a matching registration, so one busy site can fill the result set. Subdomain only skips those and leaves the cases where the keyword sits in front of an unrelated registration.',
-		displayOptions: { show: { ...showForCt, operation: ['search'] } },
-		options: [
-			{ name: 'Full Hostname', value: 'domain' },
-			{ name: 'Registered Domain', value: 'reg' },
-			{ name: 'Subdomain Only', value: 'sld' },
-		],
-		routing: { request: { qs: { field: '={{$value === "domain" ? "" : $value}}' } } },
-	},
 
 	ctOptions('certs', [
 		certTypeOption,
@@ -195,6 +135,5 @@ export const ctDescription: INodeProperties[] = [
 		loggedAfterOption,
 		loggedBeforeOption,
 	]),
-	ctOptions('search', [limitOption(500), sortOption, tldOption]),
 	ctOptions('subdomains', [limitOption(5000), loggedAfterOption, loggedBeforeOption]),
 ];

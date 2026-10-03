@@ -57,7 +57,7 @@ In n8n, create a new **DomainKits API** credential and paste the key (it starts 
 | Monitor | Changes | `/monitor/changes` |
 | Certificate Transparency | Subdomains | `/ct/subdomains` |
 | Certificate Transparency | Certificates | `/ct/certs` |
-| Certificate Transparency | Search | `/ct/search` |
+| Hostname | Search | `/search/hostname` |
 | Trends | TLDs | `/trends/tlds/*` |
 | Trends | Keywords | `/trends/keywords/*` |
 | Account | Usage | `/usage` |

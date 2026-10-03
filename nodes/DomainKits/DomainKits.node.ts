@@ -5,6 +5,7 @@ import { agedDescription } from './resources/aged';
 import { ctDescription } from './resources/ct';
 import { deletedDescription } from './resources/deleted';
 import { expiredDescription } from './resources/expired';
+import { hostnameDescription } from './resources/hostname';
 import { lookupDescription } from './resources/lookup';
 import { marketDescription } from './resources/market';
 import { monitorDescription } from './resources/monitor';
@@ -33,7 +34,7 @@ const resources = [
 	{
 		name: 'Certificate Transparency',
 		value: 'ct',
-		description: 'Subdomains, certificates and hostname search from CT logs',
+		description: 'Subdomains and certificates from CT logs',
 		properties: ctDescription,
 	},
 	{
@@ -59,6 +60,12 @@ const resources = [
 		value: 'expired',
 		description: 'Search expired, redemption, and pending delete domains',
 		properties: expiredDescription,
+	},
+	{
+		name: 'Hostname',
+		value: 'hostname',
+		description: 'Search hostnames seen in certificates by keyword',
+		properties: hostnameDescription,
 	},
 	{
 		name: 'Marketplace Domain',
