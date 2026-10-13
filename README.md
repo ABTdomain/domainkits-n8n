@@ -38,7 +38,6 @@ In n8n, create a new **DomainKits API** credential and paste the key (it starts 
 | Resource | Operation | Endpoint |
 |---|---|---|
 | Newly Registered | Search | `/search/nrds` |
-| Newly Registered | Search Live | `/search/nrds-live` |
 | Expired | Search | `/search/expired` |
 | Aged | Search | `/search/aged` |
 | Active | Search | `/search/active` |

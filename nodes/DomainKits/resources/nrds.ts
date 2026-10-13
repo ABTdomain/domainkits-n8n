@@ -33,11 +33,6 @@ const showForTldMode = {
 	searchMode: ['tld'],
 };
 
-const showForLive = {
-	resource: ['nrd'],
-	operation: ['searchLive'],
-};
-
 export const nrdDescription: INodeProperties[] = [
 	{
 		displayName: 'Operation',
@@ -56,22 +51,6 @@ export const nrdDescription: INodeProperties[] = [
 					request: {
 						method: 'GET',
 						url: '/search/nrds',
-					},
-					output: {
-						postReceive: [parseDomainKitsResponse],
-					},
-				},
-			},
-			{
-				name: 'Search Live',
-				value: 'searchLive',
-				action: 'Search the live newly registered feed',
-				description:
-					'Search the last three days with live updates: names registered hours ago that the daily search cannot show yet. Covers .ai and .io alongside the generic TLDs. TLD takes a single value here.',
-				routing: {
-					request: {
-						method: 'GET',
-						url: '/search/nrds-live',
 					},
 					output: {
 						postReceive: [parseDomainKitsResponse],
@@ -141,38 +120,5 @@ export const nrdDescription: INodeProperties[] = [
 		],
 	},
 
-	keywordProperty(showForLive, 'dental'),
-	...paginationProperties(showForLive),
-
-	{
-		displayName: 'Filters',
-		name: 'liveFilters',
-		type: 'collection',
-		placeholder: 'Add Filter',
-		default: {},
-		displayOptions: { show: showForLive },
-		options: [
-			compositionFilter,
-			excludeKeywordsFilter,
-			lengthMinFilter,
-			lengthMaxFilter,
-			createDateStartFilter,
-			createDateEndFilter,
-			sortFilter(
-				[
-					{ name: 'Alphabetical (A-Z)', value: 'alpha' },
-					{ name: 'Alphabetical (Z-A)', value: 'alpha_desc' },
-					{ name: 'Length (Longest First)', value: 'length_desc' },
-					{ name: 'Length (Shortest First)', value: 'length_asc' },
-					{ name: 'Registered (Newest First)', value: 'reg_date_desc' },
-					{ name: 'Registered (Oldest First)', value: 'reg_date_asc' },
-				],
-				'reg_date_desc',
-			),
-			tldFilter,
-		],
-	},
-
 	keywordPositionProperty(showForKeywordMode),
-	keywordPositionProperty(showForLive),
 ];
