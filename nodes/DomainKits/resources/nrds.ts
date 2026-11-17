@@ -102,6 +102,27 @@ export const nrdDescription: INodeProperties[] = [
 				description: 'Maximum registration term in years',
 				routing: { request: { qs: { period_max: '={{$value}}' } } },
 			},
+			{
+				displayName: 'Mail Server',
+				name: 'mx_status',
+				type: 'options',
+				default: '1',
+				options: [
+					{ name: 'Has Mail Server (MX)', value: '1' },
+					{ name: 'No Mail Server', value: '0' },
+				],
+				description: 'Keep only domains with mail servers (MX) on record, or only domains without',
+				routing: { request: { qs: { mx_status: '={{$value}}' } } },
+			},
+			{
+				displayName: 'Mail Server Host',
+				name: 'mx',
+				type: 'string',
+				default: '',
+				placeholder: 'google',
+				description: 'Keep only domains whose mail server (MX) host contains this text, e.g. google',
+				routing: { request: { qs: { mx: '={{$value}}' } } },
+			},
 			sortFilter(
 				[
 					{ name: 'Alphabetical', value: 'alpha' },
